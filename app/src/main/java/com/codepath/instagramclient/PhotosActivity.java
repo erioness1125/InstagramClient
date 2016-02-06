@@ -46,7 +46,6 @@ public class PhotosActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 //                super.onSuccess(statusCode, headers, response);
-//                Log.i("debug", response.toString());
                 // iterate each of the photo items and decode it into a java object
                 JSONArray photosArr = null;
                 try {
@@ -54,15 +53,32 @@ public class PhotosActivity extends AppCompatActivity {
                     for (int i = 0; i < photosArr.length(); i++) {
                         JSONObject photoJson = photosArr.getJSONObject(i);
                         if ( "image".equals( photoJson.getString("type") ) ) {
-                            String userName = photoJson.getJSONObject("user").getString("username");
-                            String caption = photoJson.getJSONObject("caption").get("text") != null
-                                    ? photoJson.getJSONObject("caption").getString("text")
-                                    : "";
-                            int likesCount = photoJson.getJSONObject("likes").getInt("count");
+                            String userName = "",
+                                    caption = "",
+                                    imageUrl = "";
+                            int imageHeight = 0,
+                                    likesCount = 0;
 
-                            JSONObject standardImgJson = photoJson.getJSONObject("images").getJSONObject("standard_resolution");
-                            String imageUrl = standardImgJson.getString("url");
-                            int imageHeight = standardImgJson.getInt("height");
+                            JSONObject userJson = photoJson.optJSONObject("user");
+                            if (userJson != null)
+                                userName = userJson.optString("username");
+
+                            JSONObject captionJson = photoJson.optJSONObject("caption");
+                            if (captionJson != null)
+                                caption = captionJson.optString("text");
+
+                            JSONObject likesJson = photoJson.optJSONObject("likes");
+                            if (likesJson != null)
+                                likesCount = likesJson.optInt("count");
+
+                            JSONObject imagesJson = photoJson.optJSONObject("images");
+                            JSONObject stdResImgJson = null;
+                            if (imagesJson != null)
+                                stdResImgJson = imagesJson.optJSONObject("standard_resolution");
+                            if (stdResImgJson != null) {
+                                imageUrl = stdResImgJson.optString("url");
+                                imageHeight = stdResImgJson.optInt("height");
+                            }
 
                             InstagramPhoto photo = new InstagramPhoto(userName, caption, imageUrl, imageHeight, likesCount);
                             iPhotosList.add(photo);
