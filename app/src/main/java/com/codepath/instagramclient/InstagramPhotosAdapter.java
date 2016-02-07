@@ -2,6 +2,7 @@ package com.codepath.instagramclient;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,10 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         // clear out the imageview so that the old image from the recycled view doesn't appear
         ivPhoto.setImageResource(0);
         // insert the image using Picasso (library)
-        Picasso.with(getContext()).load(photo.getImageUrl()).into(ivPhoto);
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        Picasso.with(getContext()).load(photo.getImageUrl())
+                .resize(displayMetrics.widthPixels, 0)
+                .into(ivPhoto);
 
         // get and set username
         TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);

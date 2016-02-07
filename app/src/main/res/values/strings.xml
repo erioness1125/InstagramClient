@@ -18,4 +18,8 @@
     <string name="user">user</string>
     <string name="username">username</string>
 
+    <string name="content_desc_profile_pic">Instagram user profile picture</string>
+    <string name="content_desc_graphic">Instagram graphic</string>
+    <string name="content_desc_likes">Instagram likes</string>
+
 </resources>

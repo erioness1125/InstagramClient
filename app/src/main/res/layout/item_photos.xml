@@ -8,8 +8,8 @@
         android:id="@+id/ibUserProfilePic"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:clickable="true"
-        android:background="#00ffffff" />
+        android:background="#00ffffff"
+        android:contentDescription="@string/content_desc_profile_pic" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,10 +18,10 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ibUserProfilePic"
         android:layout_toEndOf="@+id/ibUserProfilePic"
-        android:layout_above="@+id/ivPhoto"
         android:gravity="center_vertical"
         android:textColor="@color/colorPrimary"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:layout_alignBottom="@+id/ibUserProfilePic" />
 
     <TextView
         android:layout_width="match_parent"
@@ -30,9 +30,9 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/tvUserName"
         android:layout_toEndOf="@+id/tvUserName"
-        android:layout_above="@+id/ivPhoto"
         android:gravity="center_vertical|right"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:layout_alignBottom="@+id/ibUserProfilePic" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -43,18 +43,20 @@
         android:minHeight="50dp"
         android:layout_below="@+id/ibUserProfilePic"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/content_desc_graphic"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvCaption"
-        android:textSize="20sp"
-        android:maxLines="3"
         android:ellipsize="end"
         android:layout_below="@+id/ivPhoto"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="5dp" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -63,7 +65,8 @@
         android:layout_below="@+id/tvCaption"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/ic_favorite_24dp" />
+        android:background="@drawable/ic_favorite_24dp"
+        android:contentDescription="@string/content_desc_likes" />
 
     <TextView
         android:layout_width="wrap_content"
