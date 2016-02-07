@@ -5,6 +5,7 @@
 
     <string name="caption">caption</string>
     <string name="count">count</string>
+    <string name="created_time">created_time</string>
     <string name="data">data</string>
     <string name="height">height</string>
     <string name="images">images</string>

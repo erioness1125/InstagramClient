@@ -1,6 +1,7 @@
 package com.codepath.instagramclient;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,18 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
                 .resize(80, 80)
                 .transform(circleTransformation)
                 .into(ibUserProfilePic);
+
+        // get and set likes count
+        TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
+        tvLikes.setText(photo.getLikesCount() + " likes");
+
+        // get and set createdTime
+        TextView tvWhenCreated = (TextView) convertView.findViewById(R.id.tvWhenCreated);
+        tvWhenCreated.setText(
+                DateUtils.getRelativeTimeSpanString(
+                        photo.getCreatedTime() * 1000, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+                )
+        );
 
         return convertView;
     }

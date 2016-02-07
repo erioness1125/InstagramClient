@@ -58,6 +58,7 @@ public class PhotosActivity extends AppCompatActivity {
                                     imageUrl = "";
                             int imageHeight = 0,
                                     likesCount = 0;
+                            long createdTime = 0;
 
                             JSONObject userJson = photoJson.optJSONObject( getString(R.string.user) );
                             if (userJson != null) {
@@ -82,7 +83,10 @@ public class PhotosActivity extends AppCompatActivity {
                                 imageHeight = stdResImgJson.optInt( getString(R.string.height) );
                             }
 
-                            InstagramPhoto photo = new InstagramPhoto(userName, userProfilePicUrl, caption, imageUrl, imageHeight, likesCount);
+                            createdTime = photoJson.optLong( getString(R.string.created_time) );
+
+                            InstagramPhoto photo = new InstagramPhoto(
+                                    userName, userProfilePicUrl, caption, imageUrl, imageHeight, likesCount, createdTime);
                             iPhotosList.add(photo);
                         }
                     }
