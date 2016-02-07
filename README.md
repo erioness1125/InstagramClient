@@ -31,6 +31,7 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * [ ] List anything else that you can get done to improve the app functionality!
+* [x] Improved the performance by applying the ViewHolder pattern which speeds up the population of the ListView
 
 ## Video Walkthrough 
 

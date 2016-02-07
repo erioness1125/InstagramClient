@@ -19,36 +19,52 @@ import java.util.List;
 
 public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
-        super(context, R.layout.support_simple_spinner_dropdown_item, objects);
+        super(context, R.layout.item_photos, objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         InstagramPhoto photo = getItem(position);
-        if (convertView == null)
+
+        ViewHolder viewHolder; // view lookup cache stored in tag
+
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photos, parent, false);
 
+            viewHolder = new ViewHolder();
+            viewHolder.ibUserProfilePic = (ImageButton) convertView.findViewById(R.id.ibUserProfilePic);
+            viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
+            viewHolder.tvWhenCreated = (TextView) convertView.findViewById(R.id.tvWhenCreated);
+            viewHolder.ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
+            viewHolder.tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
+            viewHolder.tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
+
+            convertView.setTag(viewHolder);
+        }
+        else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        // Populate the data into the each view
+
         // get and set caption
-        TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        tvCaption.setText(photo.getCaption());
+        viewHolder.tvCaption.setText(photo.getCaption());
 
         // get and set photo
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
         // clear out the imageview so that the old image from the recycled view doesn't appear
-        ivPhoto.setImageResource(0);
+        viewHolder.ivPhoto.setImageResource(0);
         // insert the image using Picasso (library)
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         Picasso.with(getContext()).load(photo.getImageUrl())
                 .resize(displayMetrics.widthPixels, 0)
-                .into(ivPhoto);
+                .into(viewHolder.ivPhoto);
 
         // get and set username
-        TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
-        tvUserName.setText(photo.getUserName());
+        viewHolder.tvUserName.setText(photo.getUserName());
 
         // get and set user profile pic
-        ImageButton ibUserProfilePic = (ImageButton) convertView.findViewById(R.id.ibUserProfilePic);
-        ibUserProfilePic.setImageResource(0);
+        viewHolder.ibUserProfilePic.setImageResource(0);
         // display each user profile image using a RoundedImageViewDisplay each user profile image using a RoundedImageView
         Transformation circleTransformation = new RoundedTransformationBuilder()
                 .cornerRadiusDp(30)
@@ -58,20 +74,27 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         Picasso.with(getContext()).load(photo.getUserProfilePicUrl())
                 .resize(80, 80)
                 .transform(circleTransformation)
-                .into(ibUserProfilePic);
+                .into(viewHolder.ibUserProfilePic);
 
         // get and set likes count
-        TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
-        tvLikes.setText(photo.getLikesCount() + " likes");
+        viewHolder.tvLikes.setText(photo.getLikesCount() + " likes");
 
         // get and set createdTime
-        TextView tvWhenCreated = (TextView) convertView.findViewById(R.id.tvWhenCreated);
-        tvWhenCreated.setText(
+        viewHolder.tvWhenCreated.setText(
                 DateUtils.getRelativeTimeSpanString(
                         photo.getCreatedTime() * 1000, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
                 )
         );
 
         return convertView;
+    }
+
+    private static class ViewHolder {
+        TextView tvUserName;
+        TextView tvCaption;
+        TextView tvLikes;
+        TextView tvWhenCreated;
+        ImageView ivPhoto;
+        ImageButton ibUserProfilePic;
     }
 }
