@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Popular Photos</string>
+
+    <string name="instagramClientId">e05c462ebd86446ea48a5af73769b602</string>
+
+    <string name="caption">caption</string>
+    <string name="count">count</string>
+    <string name="data">data</string>
+    <string name="height">height</string>
+    <string name="images">images</string>
+    <string name="likes">likes</string>
+    <string name="profile_picture">profile_picture</string>
+    <string name="standard_resolution">standard_resolution</string>
+    <string name="text">text</string>
+    <string name="type">type</string>
+    <string name="url">url</string>
+    <string name="user">user</string>
+    <string name="username">username</string>
+
 </resources>

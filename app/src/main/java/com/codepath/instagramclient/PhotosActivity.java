@@ -17,8 +17,6 @@ import cz.msebera.android.httpclient.Header;
 
 public class PhotosActivity extends AppCompatActivity {
 
-    private static final String CLIENT_ID = "e05c462ebd86446ea48a5af73769b602";
-
     private ArrayList<InstagramPhoto> iPhotosList;
 
     private InstagramPhotosAdapter adapter;
@@ -37,7 +35,8 @@ public class PhotosActivity extends AppCompatActivity {
 
     // trigger API request
     private void fetchPopularPhotos() {
-        String url = "https://api.instagram.com/v1/media/popular?client_id=" + CLIENT_ID;
+        String url = "https://api.instagram.com/v1/media/popular?client_id="
+                + getString(R.string.instagramClientId);
         // create the network client
         AsyncHttpClient client = new AsyncHttpClient();
         // trigger GET request
@@ -49,38 +48,41 @@ public class PhotosActivity extends AppCompatActivity {
                 // iterate each of the photo items and decode it into a java object
                 JSONArray photosArr = null;
                 try {
-                    photosArr = response.getJSONArray("data");
+                    photosArr = response.getJSONArray( getString(R.string.data) );
                     for (int i = 0; i < photosArr.length(); i++) {
                         JSONObject photoJson = photosArr.getJSONObject(i);
-                        if ( "image".equals( photoJson.getString("type") ) ) {
+                        if ( "image".equals( photoJson.getString( getString(R.string.type) ) ) ) {
                             String userName = "",
+                                    userProfilePicUrl = "",
                                     caption = "",
                                     imageUrl = "";
                             int imageHeight = 0,
                                     likesCount = 0;
 
-                            JSONObject userJson = photoJson.optJSONObject("user");
-                            if (userJson != null)
-                                userName = userJson.optString("username");
-
-                            JSONObject captionJson = photoJson.optJSONObject("caption");
-                            if (captionJson != null)
-                                caption = captionJson.optString("text");
-
-                            JSONObject likesJson = photoJson.optJSONObject("likes");
-                            if (likesJson != null)
-                                likesCount = likesJson.optInt("count");
-
-                            JSONObject imagesJson = photoJson.optJSONObject("images");
-                            JSONObject stdResImgJson = null;
-                            if (imagesJson != null)
-                                stdResImgJson = imagesJson.optJSONObject("standard_resolution");
-                            if (stdResImgJson != null) {
-                                imageUrl = stdResImgJson.optString("url");
-                                imageHeight = stdResImgJson.optInt("height");
+                            JSONObject userJson = photoJson.optJSONObject( getString(R.string.user) );
+                            if (userJson != null) {
+                                userName = userJson.optString( getString(R.string.username) );
+                                userProfilePicUrl = userJson.optString( getString(R.string.profile_picture) );
                             }
 
-                            InstagramPhoto photo = new InstagramPhoto(userName, caption, imageUrl, imageHeight, likesCount);
+                            JSONObject captionJson = photoJson.optJSONObject( getString(R.string.caption) );
+                            if (captionJson != null)
+                                caption = captionJson.optString( getString(R.string.text) );
+
+                            JSONObject likesJson = photoJson.optJSONObject( getString(R.string.likes) );
+                            if (likesJson != null)
+                                likesCount = likesJson.optInt( getString(R.string.count) );
+
+                            JSONObject imagesJson = photoJson.optJSONObject( getString(R.string.images) );
+                            JSONObject stdResImgJson = null;
+                            if (imagesJson != null)
+                                stdResImgJson = imagesJson.optJSONObject( getString(R.string.standard_resolution) );
+                            if (stdResImgJson != null) {
+                                imageUrl = stdResImgJson.optString( getString(R.string.url) );
+                                imageHeight = stdResImgJson.optInt( getString(R.string.height) );
+                            }
+
+                            InstagramPhoto photo = new InstagramPhoto(userName, userProfilePicUrl, caption, imageUrl, imageHeight, likesCount);
                             iPhotosList.add(photo);
                         }
                     }
