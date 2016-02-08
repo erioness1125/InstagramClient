@@ -1,6 +1,7 @@
 package com.codepath.instagramclient;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
@@ -15,19 +16,24 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class PhotosActivity extends AppCompatActivity {
+public class PhotosActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private ArrayList<InstagramPhoto> iPhotosList;
-
     private InstagramPhotosAdapter adapter;
+    private ListView lvPhotos;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos);
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(this);
+
         iPhotosList = new ArrayList<>();
         adapter = new InstagramPhotosAdapter(this, iPhotosList);
-        ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+        lvPhotos = (ListView) findViewById(R.id.lvPhotos);
         lvPhotos.setAdapter(adapter);
         // send out API request to POPULAR PHOTOS
         fetchPopularPhotos();
@@ -103,5 +109,21 @@ public class PhotosActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                iPhotosList = new ArrayList<>();
+                adapter = new InstagramPhotosAdapter(PhotosActivity.this, iPhotosList);
+                lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+                lvPhotos.setAdapter(adapter);
+                fetchPopularPhotos();
+
+                swipeContainer.setRefreshing(false);
+            }
+        }, 1000);
     }
 }

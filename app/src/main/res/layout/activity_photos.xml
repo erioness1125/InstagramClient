@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.codepath.instagramclient.PhotosActivity">
+    tools:context="com.codepath.instagramclient.PhotosActivity"
+    android:id="@+id/swipeContainer">
 
     <ListView
         android:layout_width="wrap_content"
@@ -18,4 +19,4 @@
         android:dividerHeight="50dp"
         android:background="#00ffffff"
         android:divider="#00ffffff" />
-</RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
