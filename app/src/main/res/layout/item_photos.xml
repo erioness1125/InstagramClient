@@ -62,22 +62,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ivFav24"
+        android:background="@drawable/ic_favorite_24dp"
+        android:contentDescription="@string/content_desc_likes"
         android:layout_below="@+id/tvCaption"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/ic_favorite_24dp"
-        android:contentDescription="@string/content_desc_likes" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvLikes"
+        android:gravity="center_vertical"
+        android:textColor="@color/colorPrimary"
         android:layout_below="@+id/tvCaption"
+        android:layout_alignTop="@+id/ivFav24"
+        android:layout_alignBottom="@+id/ivFav24"
         android:layout_toRightOf="@+id/ivFav24"
         android:layout_toEndOf="@+id/ivFav24"
-        android:gravity="center_vertical"
-        android:layout_alignBottom="@+id/ivFav24"
-        android:textColor="@color/colorPrimary"
         android:layout_marginLeft="5dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivFav24"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/llComments" />
 
 </RelativeLayout>

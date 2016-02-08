@@ -4,9 +4,11 @@
     <string name="instagramClientId">e05c462ebd86446ea48a5af73769b602</string>
 
     <string name="caption">caption</string>
+    <string name="comments">comments</string>
     <string name="count">count</string>
     <string name="created_time">created_time</string>
     <string name="data">data</string>
+    <string name="from">from</string>
     <string name="height">height</string>
     <string name="images">images</string>
     <string name="likes">likes</string>

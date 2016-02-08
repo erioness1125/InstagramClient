@@ -5,6 +5,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
+import com.codepath.instagramclient.models.InstagramPhoto;
+import com.codepath.instagramclient.models.InstagramPhotoComment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -13,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -91,8 +94,36 @@ public class PhotosActivity extends AppCompatActivity implements SwipeRefreshLay
 
                             createdTime = photoJson.optLong( getString(R.string.created_time) );
 
+                            // get comments
+                            List<InstagramPhotoComment> comments = new ArrayList<>();
+                            int commentsCount = 0;
+                            JSONObject commentsJson = photoJson.optJSONObject( getString(R.string.comments) );
+                            if (commentsJson != null) {
+                                commentsCount = commentsJson.optInt( getString(R.string.count) );
+                                JSONArray commentsDataArr = commentsJson.optJSONArray( getString(R.string.data) );
+                                if (commentsDataArr != null) {
+                                    for (int j = 0; j < commentsDataArr.length(); j++) {
+                                        JSONObject jo = commentsDataArr.getJSONObject(j);
+                                        long cCreatedTime = jo.getLong(getString(R.string.created_time));
+                                        String cText = jo.getString(getString(R.string.text));
+                                        String cUserName = "";
+                                        JSONObject cFromJson = jo.optJSONObject( getString(R.string.from) );
+                                        if (cFromJson != null)
+                                            cUserName = cFromJson.optString( getString(R.string.username) );
+
+                                        InstagramPhotoComment ipc = new InstagramPhotoComment(cUserName, cText, cCreatedTime);
+                                        // comments in the response already sorted in ascending order
+                                        // if putting each at the beginning, the first item is always the latest one
+                                        comments.add(0, ipc);
+                                    }
+                                }
+                            }
+
                             InstagramPhoto photo = new InstagramPhoto(
                                     userName, userProfilePicUrl, caption, imageUrl, imageHeight, likesCount, createdTime);
+                            photo.setComments(comments);
+                            photo.setCommentsCount(commentsCount);
+
                             iPhotosList.add(photo);
                         }
                     }

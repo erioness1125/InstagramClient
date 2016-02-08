@@ -1,7 +1,11 @@
 package com.codepath.instagramclient;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.format.DateUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.codepath.instagramclient.models.InstagramPhoto;
+import com.codepath.instagramclient.models.InstagramPhotoComment;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -18,6 +25,11 @@ import com.squareup.picasso.Transformation;
 import java.util.List;
 
 public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
+
+    static long currentTime = System.currentTimeMillis();
+
+    private static final int HOW_MANY_LAST_COMMENTS = 2;
+
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
         super(context, R.layout.item_photos, objects);
     }
@@ -39,6 +51,7 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
             viewHolder.ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
             viewHolder.tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
             viewHolder.tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
+            viewHolder.llComments = (LinearLayout) convertView.findViewById(R.id.llComments);
 
             convertView.setTag(viewHolder);
         }
@@ -82,9 +95,36 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         // get and set createdTime
         viewHolder.tvWhenCreated.setText(
                 DateUtils.getRelativeTimeSpanString(
-                        photo.getCreatedTime() * 1000, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS
+                        photo.getCreatedTime() * 1000, currentTime, DateUtils.SECOND_IN_MILLIS
                 )
         );
+
+        // get and set comments
+        viewHolder.llComments.removeAllViews();
+        int count = 1;
+        for (InstagramPhotoComment comment : photo.getComments()) {
+            View c = viewHolder.llComments.inflate(getContext(), R.layout.item_comments, null);
+            TextView tvCComment = (TextView) c.findViewById(R.id.tvCComment);
+            TextView tvCCreatedTime = (TextView) c.findViewById(R.id.tvCCreatedTime);
+            String cUserName = comment.getUserName();
+            SpannableString spannable = new SpannableString(cUserName + " " + comment.getText());
+            spannable.setSpan(
+                    new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorPrimary)),
+                    0,
+                    cUserName.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tvCComment.setText(spannable);
+            tvCCreatedTime.setText(
+                    DateUtils.getRelativeTimeSpanString(
+                            comment.getCreatedTime() * 1000, currentTime, DateUtils.SECOND_IN_MILLIS
+                    ), TextView.BufferType.SPANNABLE
+            );
+            viewHolder.llComments.addView(c);
+
+            count++;
+            if (count > HOW_MANY_LAST_COMMENTS)
+                break;
+        }
 
         return convertView;
     }
@@ -96,5 +136,12 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         TextView tvWhenCreated;
         ImageView ivPhoto;
         ImageButton ibUserProfilePic;
+        LinearLayout llComments;
+    }
+
+    private static class CommentsViewHolder {
+        TextView tvCUserName;
+        TextView tvCComment;
+        TextView tvCCreatedTime;
     }
 }
