@@ -4,26 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InstagramPhoto {
-    private String userName, userProfilePicUrl, caption, imageUrl;
+    private String id, userName, userProfilePicUrl, caption, imageUrl;
     private int imageHeight, likesCount, commentsCount;
     private long createdTime;
     private List<InstagramPhotoComment> comments;
 
     public InstagramPhoto(
-            String userName, String userProfilePicUrl, String caption, String imageUrl,
+            String id, String userName, String userProfilePicUrl, String caption, String imageUrl,
             int imageHeight, int likesCount,
             long createdTime) {
-        this(userName, userProfilePicUrl, caption, imageUrl,
+        this(id, userName, userProfilePicUrl, caption, imageUrl,
                 imageHeight, likesCount, 0,
                 createdTime,
                 new ArrayList<InstagramPhotoComment>());
     }
 
     public InstagramPhoto(
-            String userName, String userProfilePicUrl, String caption, String imageUrl,
+            String id, String userName, String userProfilePicUrl, String caption, String imageUrl,
             int imageHeight, int likesCount, int commentsCount,
             long createdTime,
             List<InstagramPhotoComment> comments) {
+        this.id = id;
         this.userName = userName;
         this.userProfilePicUrl = userProfilePicUrl;
         this.caption = caption;
@@ -32,6 +33,10 @@ public class InstagramPhoto {
         this.likesCount = likesCount;
         this.createdTime = createdTime;
         this.comments = comments;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getUserName() {

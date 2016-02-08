@@ -26,6 +26,8 @@ public class PhotosActivity extends AppCompatActivity implements SwipeRefreshLay
     private ListView lvPhotos;
     private SwipeRefreshLayout swipeContainer;
 
+    private final int REQUEST_CODE = 20;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +59,12 @@ public class PhotosActivity extends AppCompatActivity implements SwipeRefreshLay
                 // iterate each of the photo items and decode it into a java object
                 JSONArray photosArr = null;
                 try {
-                    photosArr = response.getJSONArray( getString(R.string.data) );
+                    photosArr = response.getJSONArray(getString(R.string.data));
                     for (int i = 0; i < photosArr.length(); i++) {
                         JSONObject photoJson = photosArr.getJSONObject(i);
-                        if ( "image".equals( photoJson.getString( getString(R.string.type) ) ) ) {
-                            String userName = "",
+                        if ("image".equals(photoJson.getString(getString(R.string.type)))) {
+                            String id = "",
+                                    userName = "",
                                     userProfilePicUrl = "",
                                     caption = "",
                                     imageUrl = "";
@@ -69,47 +72,49 @@ public class PhotosActivity extends AppCompatActivity implements SwipeRefreshLay
                                     likesCount = 0;
                             long createdTime = 0;
 
-                            JSONObject userJson = photoJson.optJSONObject( getString(R.string.user) );
+                            id = photoJson.optString(getString(R.string.id));
+
+                            JSONObject userJson = photoJson.optJSONObject(getString(R.string.user));
                             if (userJson != null) {
-                                userName = userJson.optString( getString(R.string.username) );
-                                userProfilePicUrl = userJson.optString( getString(R.string.profile_picture) );
+                                userName = userJson.optString(getString(R.string.username));
+                                userProfilePicUrl = userJson.optString(getString(R.string.profile_picture));
                             }
 
-                            JSONObject captionJson = photoJson.optJSONObject( getString(R.string.caption) );
+                            JSONObject captionJson = photoJson.optJSONObject(getString(R.string.caption));
                             if (captionJson != null)
-                                caption = captionJson.optString( getString(R.string.text) );
+                                caption = captionJson.optString(getString(R.string.text));
 
-                            JSONObject likesJson = photoJson.optJSONObject( getString(R.string.likes) );
+                            JSONObject likesJson = photoJson.optJSONObject(getString(R.string.likes));
                             if (likesJson != null)
-                                likesCount = likesJson.optInt( getString(R.string.count) );
+                                likesCount = likesJson.optInt(getString(R.string.count));
 
-                            JSONObject imagesJson = photoJson.optJSONObject( getString(R.string.images) );
+                            JSONObject imagesJson = photoJson.optJSONObject(getString(R.string.images));
                             JSONObject stdResImgJson = null;
                             if (imagesJson != null)
-                                stdResImgJson = imagesJson.optJSONObject( getString(R.string.standard_resolution) );
+                                stdResImgJson = imagesJson.optJSONObject(getString(R.string.standard_resolution));
                             if (stdResImgJson != null) {
-                                imageUrl = stdResImgJson.optString( getString(R.string.url) );
-                                imageHeight = stdResImgJson.optInt( getString(R.string.height) );
+                                imageUrl = stdResImgJson.optString(getString(R.string.url));
+                                imageHeight = stdResImgJson.optInt(getString(R.string.height));
                             }
 
-                            createdTime = photoJson.optLong( getString(R.string.created_time) );
+                            createdTime = photoJson.optLong(getString(R.string.created_time));
 
                             // get comments
                             List<InstagramPhotoComment> comments = new ArrayList<>();
                             int commentsCount = 0;
-                            JSONObject commentsJson = photoJson.optJSONObject( getString(R.string.comments) );
+                            JSONObject commentsJson = photoJson.optJSONObject(getString(R.string.comments));
                             if (commentsJson != null) {
-                                commentsCount = commentsJson.optInt( getString(R.string.count) );
-                                JSONArray commentsDataArr = commentsJson.optJSONArray( getString(R.string.data) );
+                                commentsCount = commentsJson.optInt(getString(R.string.count));
+                                JSONArray commentsDataArr = commentsJson.optJSONArray(getString(R.string.data));
                                 if (commentsDataArr != null) {
                                     for (int j = 0; j < commentsDataArr.length(); j++) {
                                         JSONObject jo = commentsDataArr.getJSONObject(j);
                                         long cCreatedTime = jo.getLong(getString(R.string.created_time));
                                         String cText = jo.getString(getString(R.string.text));
                                         String cUserName = "";
-                                        JSONObject cFromJson = jo.optJSONObject( getString(R.string.from) );
+                                        JSONObject cFromJson = jo.optJSONObject(getString(R.string.from));
                                         if (cFromJson != null)
-                                            cUserName = cFromJson.optString( getString(R.string.username) );
+                                            cUserName = cFromJson.optString(getString(R.string.username));
 
                                         InstagramPhotoComment ipc = new InstagramPhotoComment(cUserName, cText, cCreatedTime);
                                         // comments in the response already sorted in ascending order
@@ -120,7 +125,7 @@ public class PhotosActivity extends AppCompatActivity implements SwipeRefreshLay
                             }
 
                             InstagramPhoto photo = new InstagramPhoto(
-                                    userName, userProfilePicUrl, caption, imageUrl, imageHeight, likesCount, createdTime);
+                                    id, userName, userProfilePicUrl, caption, imageUrl, imageHeight, likesCount, createdTime);
                             photo.setComments(comments);
                             photo.setCommentsCount(commentsCount);
 

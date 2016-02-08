@@ -1,6 +1,7 @@
 package com.codepath.instagramclient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -36,13 +37,14 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        InstagramPhoto photo = getItem(position);
+        final InstagramPhoto photo = getItem(position);
 
+        final Context context = getContext();
         ViewHolder viewHolder; // view lookup cache stored in tag
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photos, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_photos, parent, false);
 
             viewHolder = new ViewHolder();
             viewHolder.ibUserProfilePic = (ImageButton) convertView.findViewById(R.id.ibUserProfilePic);
@@ -52,6 +54,7 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
             viewHolder.tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
             viewHolder.tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
             viewHolder.llComments = (LinearLayout) convertView.findViewById(R.id.llComments);
+            viewHolder.tvSeeAllComments = (TextView) convertView.findViewById(R.id.tvSeeAllComments);
 
             convertView.setTag(viewHolder);
         }
@@ -68,8 +71,8 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         // clear out the imageview so that the old image from the recycled view doesn't appear
         viewHolder.ivPhoto.setImageResource(0);
         // insert the image using Picasso (library)
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        Picasso.with(getContext()).load(photo.getImageUrl())
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        Picasso.with(context).load(photo.getImageUrl())
                 .resize(displayMetrics.widthPixels, 0)
                 .into(viewHolder.ivPhoto);
 
@@ -84,7 +87,7 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
                 .oval(false)
                 .build();
         // insert the image using Picasso (library)
-        Picasso.with(getContext()).load(photo.getUserProfilePicUrl())
+        Picasso.with(context).load(photo.getUserProfilePicUrl())
                 .resize(80, 80)
                 .transform(circleTransformation)
                 .into(viewHolder.ibUserProfilePic);
@@ -103,17 +106,20 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         viewHolder.llComments.removeAllViews();
         int count = 1;
         for (InstagramPhotoComment comment : photo.getComments()) {
-            View c = viewHolder.llComments.inflate(getContext(), R.layout.item_comments, null);
+            View c = viewHolder.llComments.inflate(context, R.layout.item_comments, null);
             TextView tvCComment = (TextView) c.findViewById(R.id.tvCComment);
             TextView tvCCreatedTime = (TextView) c.findViewById(R.id.tvCCreatedTime);
             String cUserName = comment.getUserName();
+
+            // change color of username only
             SpannableString spannable = new SpannableString(cUserName + " " + comment.getText());
             spannable.setSpan(
-                    new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorPrimary)),
+                    new ForegroundColorSpan(ContextCompat.getColor(context, R.color.colorPrimary)),
                     0,
                     cUserName.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tvCComment.setText(spannable);
+
             tvCCreatedTime.setText(
                     DateUtils.getRelativeTimeSpanString(
                             comment.getCreatedTime() * 1000, currentTime, DateUtils.SECOND_IN_MILLIS
@@ -126,6 +132,21 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
                 break;
         }
 
+        // get and set the number of all comments
+        viewHolder.tvSeeAllComments.setText("View all " + photo.getCommentsCount() + " comments");
+        // set OnClickListener
+        viewHolder.tvSeeAllComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // first parameter is the context, second is the class of the activity to launch
+                Intent i = new Intent(context, CommentsActivity.class);
+                // put "extras" into the bundle for access in the second activity
+                i.putExtra(context.getString(R.string.id), photo.getId());
+
+                context.startActivity(i);
+            }
+        });
+
         return convertView;
     }
 
@@ -134,14 +155,9 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         TextView tvCaption;
         TextView tvLikes;
         TextView tvWhenCreated;
+        TextView tvSeeAllComments;
         ImageView ivPhoto;
         ImageButton ibUserProfilePic;
         LinearLayout llComments;
-    }
-
-    private static class CommentsViewHolder {
-        TextView tvCUserName;
-        TextView tvCComment;
-        TextView tvCCreatedTime;
     }
 }

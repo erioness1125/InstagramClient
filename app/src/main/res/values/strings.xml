@@ -10,6 +10,7 @@
     <string name="data">data</string>
     <string name="from">from</string>
     <string name="height">height</string>
+    <string name="id">id</string>
     <string name="images">images</string>
     <string name="likes">likes</string>
     <string name="profile_picture">profile_picture</string>
@@ -23,5 +24,8 @@
     <string name="content_desc_profile_pic">Instagram user profile picture</string>
     <string name="content_desc_graphic">Instagram graphic</string>
     <string name="content_desc_likes">Instagram likes</string>
+    <string name="all_comments">All Comments</string>
+
+    <string name="action_back">action_back</string>
 
 </resources>
